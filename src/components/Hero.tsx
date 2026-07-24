@@ -27,8 +27,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenCheckup }) => {
               <span className="truncate">Ufficio Plurimandatario Assicurativo a Rho</span>
             </div>
 
+            {/* Official Agency Name on a single line */}
+            <div className="pt-1 text-[#c5a059] font-extrabold text-lg sm:text-2xl tracking-tight leading-snug">
+              S.F. Consulenze Assicurative <span className="hidden sm:inline">•</span> <span className="block sm:inline text-slate-300 font-semibold text-base sm:text-xl">Simone Facchi</span>
+            </div>
+
             {/* Exact Requested Hero Title */}
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight pt-1">
               Più soluzioni assicurative. <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#c5a059] via-[#e5c784] to-[#c5a059]">
                 Una consulenza costruita su di te.

@@ -100,8 +100,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
       }`}>
         <div className="container mx-auto px-4 flex items-center justify-between gap-3">
           
-          {/* Brand Identity: Logo + Full Title (Always perfectly visible) */}
-          <a href="#home" className="flex items-center gap-2.5 group focus:outline-none min-w-0 flex-1">
+          {/* Brand Identity:
+              - Mobile (< lg): Logo ONLY (No text) for maximum clean space
+              - Desktop (lg+): Logo + Business Title
+          */}
+          <a href="#home" className="flex items-center gap-3 group focus:outline-none shrink-0">
+            {/* Circular Logo Frame */}
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
               <img 
                 src={logoImg} 
@@ -109,17 +113,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
                 className="w-full h-full object-contain rounded-full"
               />
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-white tracking-tight text-sm sm:text-base lg:text-lg leading-tight truncate group-hover:text-[#c5a059] transition-colors">
+            
+            {/* Title & Subtitle: Shown on Desktop (lg:flex) */}
+            <div className="hidden lg:flex flex-col min-w-0">
+              <span className="font-extrabold text-white tracking-tight text-base lg:text-lg leading-tight truncate group-hover:text-[#c5a059] transition-colors">
                 S.F. Consulenze Assicurative
               </span>
-              <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-semibold tracking-wide truncate">
+              <span className="text-[11px] text-[#c5a059] font-semibold tracking-wide truncate">
                 Simone Facchi • Rho (MI)
               </span>
             </div>
           </a>
 
-          {/* Desktop Navigation Links (hidden on mobile/tablet) */}
+          {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
             {navLinks.map((link) => {
               const isActive = activeSection === link.href.substring(1);
@@ -139,24 +145,27 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             })}
           </div>
 
-          {/* Desktop CTA & Mobile Toggle */}
+          {/* Right Action Controls:
+              - Mobile (< lg): "Prenota consulenza" Button + Menu Toggle
+              - Desktop (lg+): "Prenota consulenza" Button
+          */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Desktop CTA Button */}
+            {/* Prenota Consulenza Button (Visible on both Mobile and Desktop as requested) */}
             <button
               onClick={() => onOpenBooking()}
-              className="hidden lg:inline-flex btn btn-primary text-xs xl:text-sm py-2.5 px-4 shadow-lg font-bold"
+              className="btn btn-primary text-xs sm:text-sm py-2 px-3 sm:py-2.5 sm:px-4 shadow-lg font-bold"
             >
               <Calendar size={15} />
               <span>Prenota consulenza</span>
             </button>
 
-            {/* Mobile / Tablet Menu Button (Clean 100% spacious navbar row) */}
+            {/* Mobile / Tablet Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-white p-2.5 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-colors focus:outline-none"
+              className="lg:hidden text-white p-2 sm:p-2.5 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-colors focus:outline-none"
               aria-label={mobileMenuOpen ? "Chiudi menu" : "Apri menu"}
             >
-              {mobileMenuOpen ? <X size={22} className="text-[#c5a059]" /> : <Menu size={22} />}
+              {mobileMenuOpen ? <X size={20} className="text-[#c5a059]" /> : <Menu size={20} />}
             </button>
           </div>
 

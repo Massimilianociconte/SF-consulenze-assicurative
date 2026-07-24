@@ -118,7 +118,9 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   transition: var(--transition);
   text-align: center;
-  white-space: nowrap;
+  white-space: normal; /* Allows text wrapping on mobile */
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .btn-primary {

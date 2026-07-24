@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Phone, MessageCircle, MapPin, Menu, X, Calendar, Shield, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Phone, MessageCircle, MapPin, Menu, X, Calendar, Shield, ChevronRight, Sparkles, Award } from 'lucide-react';
 import { AGENCY_INFO } from '../data/content';
 import logoImg from '../assets/logo.png';
 
@@ -12,18 +12,40 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, activeSection }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navBottomOffset, setNavBottomOffset] = useState<number>(80);
+  
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Measure exact bottom position of navbar to place drawer with 0px overlap
+  const updateNavOffset = () => {
+    if (navRef.current) {
+      const rect = navRef.current.getBoundingClientRect();
+      setNavBottomOffset(rect.bottom);
+    }
+  };
 
   useEffect(() => {
+    updateNavOffset();
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 15);
+      updateNavOffset();
     };
+    const handleResize = () => {
+      updateNavOffset();
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Recalculate whenever menu opens
   useEffect(() => {
     if (mobileMenuOpen) {
+      updateNavOffset();
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -34,13 +56,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
   }, [mobileMenuOpen]);
 
   const navLinks = [
-    { href: "#home", label: "Home" },
-    { href: "#soluzioni", label: "Soluzioni Assicurative" },
-    { href: "#checkup", label: "Check-up Polizze" },
-    { href: "#sinistri", label: "Sinistri e Assistenza" },
-    { href: "#chi-siamo", label: "Chi siamo" },
-    { href: "#faq", label: "FAQ" },
-    { href: "#contatti", label: "Contatti" }
+    { href: "#home", label: "Home", badge: "Inizio" },
+    { href: "#soluzioni", label: "Soluzioni Assicurative", badge: "Privati & Imprese" },
+    { href: "#checkup", label: "Check-up Polizze", badge: "Gratuito" },
+    { href: "#sinistri", label: "Sinistri e Assistenza", badge: " h24 Direct" },
+    { href: "#chi-siamo", label: "Chi siamo", badge: "Rho (MI)" },
+    { href: "#faq", label: "FAQ", badge: "Risposte" },
+    { href: "#contatti", label: "Contatti & Sede", badge: "Galleria Gandhi" }
   ];
 
   return (
@@ -93,18 +115,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
       </div>
 
       {/* 2. Main Glass Navbar */}
-      <nav className={`transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-[#0a192f]/95 backdrop-blur-md py-2 shadow-xl border-b border-[#c5a059]/25' 
-          : 'bg-[#0a192f] py-3 border-b border-white/10'
-      }`}>
+      <nav 
+        ref={navRef}
+        className={`transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-[#0a192f]/95 backdrop-blur-md py-2 shadow-xl border-b border-[#c5a059]/25' 
+            : 'bg-[#0a192f] py-3 border-b border-white/10'
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 xl:gap-4 max-w-full">
           
-          {/* Brand Identity:
-              - Mobile (< lg): Circular Logo ONLY (Zero title truncation, max clean space)
-              - Desktop (lg+): Logo + Compact Business Title
-          */}
-          <a href="#home" className="flex items-center gap-2 xl:gap-2.5 group focus:outline-none shrink-0">
+          {/* Brand Identity: Logo + Desktop Title */}
+          <a href="#home" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
             {/* Circular Logo Frame */}
             <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
               <img 
@@ -156,10 +178,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               <span>Prenota consulenza</span>
             </button>
 
-            {/* Mobile / Tablet Innovative Menu Toggle */}
+            {/* Mobile / Tablet Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-white p-2 sm:p-2.5 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-all focus:outline-none shrink-0 hover:scale-105 active:scale-95"
+              className="lg:hidden text-white p-2 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-all focus:outline-none shrink-0 active:scale-95"
               aria-label={mobileMenuOpen ? "Chiudi menu" : "Apri menu"}
             >
               {mobileMenuOpen ? (
@@ -173,20 +195,30 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
         </div>
       </nav>
 
-      {/* 3. Innovative Mobile Native Drawer Overlay */}
+      {/* 3. Refined Mobile Native Drawer (Exact pixel alignment below navbar, 0px overlap) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-[88px] z-50 bg-[#050c17]/96 backdrop-blur-2xl flex flex-col justify-between p-5 border-t border-[#c5a059]/25 animate-drawer-open overflow-y-auto">
+        <div 
+          style={{ top: `${navBottomOffset}px` }}
+          className="lg:hidden fixed left-0 right-0 bottom-0 z-50 bg-[#050c17]/97 backdrop-blur-2xl flex flex-col justify-between p-5 border-t border-[#c5a059]/30 animate-drawer-open overflow-y-auto"
+        >
           
-          <div className="space-y-1.5 pt-2">
-            <div className="flex items-center justify-between px-3 mb-3">
-              <span className="text-[11px] font-bold text-[#c5a059] uppercase tracking-wider">
-                Navigazione Principale
-              </span>
-              <span className="text-[10px] text-[#c5a059] font-semibold px-2.5 py-0.5 rounded-full bg-[#112240] border border-[#c5a059]/30">
-                S.F. Consulenze Rho
+          <div className="space-y-2 pt-1">
+            
+            {/* Refined Header Tag */}
+            <div className="flex items-center justify-between px-2 mb-3 pb-2 border-b border-[#1e293b]">
+              <div className="flex items-center gap-2">
+                <Sparkles size={14} className="text-[#c5a059]" />
+                <span className="text-[11px] font-bold text-[#c5a059] uppercase tracking-wider">
+                  Menu Consulenza
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-300 font-semibold px-2.5 py-0.5 rounded-full bg-[#112240] border border-[#c5a059]/30 flex items-center gap-1">
+                <Award size={10} className="text-[#c5a059]" />
+                <span>Studio Rho</span>
               </span>
             </div>
 
+            {/* Luxurious Navigation Cards */}
             {navLinks.map((link, idx) => {
               const isActive = activeSection === link.href.substring(1);
               return (
@@ -194,34 +226,42 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  style={{ animationDelay: `${(idx + 1) * 40}ms` }}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all animate-stagger-item ${
+                  style={{ animationDelay: `${(idx + 1) * 35}ms` }}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl font-bold text-sm transition-all animate-stagger-item ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#112240] to-[#1e293b] text-[#c5a059] border border-[#c5a059]/40 shadow-lg scale-[1.01]'
-                      : 'bg-[#0a192f]/70 border border-white/5 text-slate-200 hover:bg-white/10 hover:text-white'
+                      ? 'bg-gradient-to-r from-[#112240] via-[#1a2d4c] to-[#0a192f] text-[#c5a059] border border-[#c5a059]/50 shadow-xl scale-[1.01]'
+                      : 'bg-[#0a192f]/80 border border-white/5 text-slate-200 hover:bg-[#112240] hover:text-white hover:border-[#c5a059]/30'
                   }`}
                 >
-                  <span className="flex items-center gap-2.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-[#c5a059]' : 'bg-slate-600'}`} />
-                    {link.label}
-                  </span>
-                  <ChevronRight size={18} className={isActive ? 'text-[#c5a059] translate-x-0.5' : 'text-slate-500'} />
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#c5a059] shadow-[0_0_8px_#c5a059]' : 'bg-slate-600'}`} />
+                    <span className="tracking-tight">{link.label}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${
+                      isActive ? 'bg-[#c5a059]/20 text-[#c5a059]' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {link.badge}
+                    </span>
+                    <ChevronRight size={16} className={isActive ? 'text-[#c5a059] translate-x-0.5' : 'text-slate-500'} />
+                  </div>
                 </a>
               );
             })}
           </div>
 
-          {/* Bottom Actions in Mobile Drawer */}
+          {/* Luxurious Bottom Action Cards */}
           <div 
-            className="pt-5 pb-3 border-t border-slate-800/80 space-y-3 animate-stagger-item" 
-            style={{ animationDelay: '360ms' }}
+            className="pt-4 pb-2 border-t border-[#1e293b] space-y-3 animate-stagger-item" 
+            style={{ animationDelay: '320ms' }}
           >
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenBooking();
               }}
-              className="btn btn-primary w-full justify-center text-sm py-3.5 shadow-xl font-bold rounded-2xl"
+              className="btn btn-primary w-full justify-center text-sm py-3.5 shadow-2xl font-bold rounded-2xl border border-[#e5c784]/40"
             >
               <Calendar size={18} />
               <span>Prenota una consulenza gratuita</span>
@@ -237,8 +277,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               <span>Scrivici su WhatsApp</span>
             </a>
 
-            <div className="text-center pt-1 text-xs text-slate-400">
-              <span className="block font-semibold text-slate-300">Studio Simone Facchi</span>
+            <div className="text-center pt-1 text-[11px] text-slate-400">
+              <span className="block font-semibold text-slate-200">S.F. Consulenze Assicurative di Simone Facchi</span>
               <span>{AGENCY_INFO.address}, Rho (MI) • Tel: {AGENCY_INFO.phone}</span>
             </div>
           </div>

@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
   
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Measure exact bottom position of navbar to place drawer with 0px overlap
+  // Measure exact bottom position of navbar for mobile drawer alignment
   const updateNavOffset = () => {
     if (navRef.current) {
       const rect = navRef.current.getBoundingClientRect();
@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
     };
   }, []);
 
-  // Recalculate whenever menu opens
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       updateNavOffset();
@@ -56,13 +56,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
   }, [mobileMenuOpen]);
 
   const navLinks = [
-    { href: "#home", label: "Home", badge: "Inizio" },
-    { href: "#soluzioni", label: "Soluzioni Assicurative", badge: "Privati & Imprese" },
-    { href: "#checkup", label: "Check-up Polizze", badge: "Gratuito" },
-    { href: "#sinistri", label: "Sinistri e Assistenza", badge: " h24 Direct" },
-    { href: "#chi-siamo", label: "Chi siamo", badge: "Rho (MI)" },
-    { href: "#faq", label: "FAQ", badge: "Risposte" },
-    { href: "#contatti", label: "Contatti & Sede", badge: "Galleria Gandhi" }
+    { href: "#home", label: "Home", shortLabel: "Home", badge: "Inizio" },
+    { href: "#soluzioni", label: "Soluzioni Assicurative", shortLabel: "Soluzioni", badge: "Privati & Imprese" },
+    { href: "#checkup", label: "Check-up Polizze", shortLabel: "Check-up", badge: "Gratuito" },
+    { href: "#sinistri", label: "Sinistri e Assistenza", shortLabel: "Sinistri", badge: " h24 Direct" },
+    { href: "#chi-siamo", label: "Chi siamo", shortLabel: "Chi siamo", badge: "Rho (MI)" },
+    { href: "#faq", label: "FAQ", shortLabel: "FAQ", badge: "Risposte" },
+    { href: "#contatti", label: "Contatti", shortLabel: "Contatti", badge: "Galleria Gandhi" }
   ];
 
   return (
@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
       
       {/* 1. Top Utility Contact Bar */}
       <div className="bg-[#050c17] text-slate-300 text-xs py-1.5 border-b border-[#1e293b]/60">
-        <div className="container mx-auto px-4 flex items-center justify-between gap-2">
+        <div className="container mx-auto px-4 flex items-center justify-between gap-2 max-w-7xl">
           
           {/* Left Info */}
           <div className="flex items-center gap-3 text-slate-300 overflow-hidden">
@@ -123,10 +123,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             : 'bg-[#0a192f] py-3 border-b border-white/10'
         }`}
       >
-        <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 xl:gap-4 max-w-full">
+        <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 xl:gap-3 max-w-7xl">
           
-          {/* Brand Identity: Logo + Desktop Title */}
-          <a href="#home" className="flex items-center gap-2.5 group focus:outline-none shrink-0">
+          {/* Brand Identity:
+              - Mobile (< lg): Logo ONLY
+              - Desktop (lg+): Logo + Compact Title
+          */}
+          <a href="#home" className="flex items-center gap-2 xl:gap-2.5 group focus:outline-none shrink-0">
             {/* Circular Logo Frame */}
             <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
               <img 
@@ -137,42 +140,43 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             </div>
             
             {/* Desktop Brand Title */}
-            <div className="hidden lg:flex flex-col shrink">
-              <span className="font-extrabold text-white tracking-tight text-xs xl:text-base leading-tight group-hover:text-[#c5a059] transition-colors whitespace-nowrap">
+            <div className="hidden lg:flex flex-col shrink-0">
+              <span className="font-extrabold text-white tracking-tight text-xs xl:text-sm 2xl:text-base leading-tight group-hover:text-[#c5a059] transition-colors whitespace-nowrap">
                 S.F. Consulenze Assicurative
               </span>
-              <span className="text-[10px] xl:text-[11px] text-[#c5a059] font-semibold tracking-wide whitespace-nowrap hidden xl:block">
+              <span className="text-[10px] xl:text-[11px] text-[#c5a059] font-semibold tracking-wide whitespace-nowrap hidden 2xl:block">
                 Simone Facchi • Rho (MI)
               </span>
             </div>
           </a>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 shrink">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 shrink">
             {navLinks.map((link) => {
               const isActive = activeSection === link.href.substring(1);
               return (
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`px-2 py-1.5 xl:px-3 xl:py-2 rounded-lg text-xs xl:text-sm font-semibold transition-all whitespace-nowrap ${
+                  className={`px-2 py-1.5 xl:px-2.5 xl:py-2 rounded-lg text-xs xl:text-xs 2xl:text-sm font-semibold transition-all whitespace-nowrap ${
                     isActive
                       ? 'bg-[#112240] text-[#c5a059] border border-[#c5a059]/30 shadow-sm'
                       : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  {link.label}
+                  <span className="xl:hidden">{link.shortLabel}</span>
+                  <span className="hidden xl:inline">{link.label}</span>
                 </a>
               );
             })}
           </div>
 
-          {/* Action CTAs */}
+          {/* Right Action Controls: Never Clipped */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Prenota Consulenza Button */}
+            {/* Desktop & Mobile CTA Button */}
             <button
               onClick={() => onOpenBooking()}
-              className="btn btn-primary text-xs xl:text-sm py-2 px-3 xl:py-2.5 xl:px-4 shadow-lg font-bold whitespace-nowrap shrink-0"
+              className="btn btn-primary text-xs xl:text-xs 2xl:text-sm py-2 px-3 xl:py-2.5 xl:px-3.5 shadow-lg font-bold whitespace-nowrap shrink-0"
             >
               <Calendar size={14} className="shrink-0" />
               <span>Prenota consulenza</span>
@@ -195,7 +199,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
         </div>
       </nav>
 
-      {/* 3. Refined Mobile Native Drawer (Exact pixel alignment below navbar, 0px overlap) */}
+      {/* 3. Refined Mobile Native Drawer Overlay */}
       {mobileMenuOpen && (
         <div 
           style={{ top: `${navBottomOffset}px` }}
@@ -218,7 +222,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               </span>
             </div>
 
-            {/* Luxurious Navigation Cards */}
+            {/* Navigation Cards */}
             {navLinks.map((link, idx) => {
               const isActive = activeSection === link.href.substring(1);
               return (
@@ -251,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             })}
           </div>
 
-          {/* Luxurious Bottom Action Cards */}
+          {/* Bottom Actions in Drawer */}
           <div 
             className="pt-4 pb-2 border-t border-[#1e293b] space-y-3 animate-stagger-item" 
             style={{ animationDelay: '320ms' }}

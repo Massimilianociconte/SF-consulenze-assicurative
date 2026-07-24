@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, MapPin, Phone, Video, Send, CheckCircle2 } from 'lucide-react';
 import { AGENCY_INFO } from '../data/content';
+import logoImg from '../assets/logo.png';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -73,7 +74,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
         <div className="bg-[#112240] p-4 sm:p-5 border-b border-[#1e293b] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] p-0.5 shadow-md shrink-0">
-              <img src="/logo.png" alt="SF Logo" className="w-full h-full object-contain rounded-full" />
+              <img src={logoImg} alt="SF Logo" className="w-full h-full object-contain rounded-full" />
             </div>
             <div className="min-w-0">
               <h3 className="text-base sm:text-lg font-extrabold text-white leading-tight truncate">

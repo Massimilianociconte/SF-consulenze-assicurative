@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShieldCheck, ExternalLink, MapPin, Phone, Mail, FileText, Lock } from 'lucide-react';
 import { AGENCY_INFO } from '../data/content';
+import logoImg from '../assets/logo.png';
 
 interface RegulatoryFooterProps {
   onOpenLegalModal: (modalType: 'privacy' | 'cookie' | 'ivass' | 'reclami' | 'rui') => void;
@@ -19,10 +20,14 @@ export const RegulatoryFooter: React.FC<RegulatoryFooterProps> = ({ onOpenLegalM
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] p-0.5 shadow-md shrink-0">
-                <img src="/logo.png" alt="S.F. Consulenze Assicurative" className="w-full h-full object-contain rounded-full" />
+                <img 
+                  src={logoImg} 
+                  alt="S.F. Consulenze Assicurative" 
+                  className="w-full h-full object-contain rounded-full" 
+                />
               </div>
               <div>
-                <span className="font-bold text-white tracking-tight text-lg leading-tight block">
+                <span className="font-bold text-white tracking-tight text-base sm:text-lg leading-tight block">
                   S.F. Consulenze Assicurative
                 </span>
                 <span className="text-xs text-[#c5a059]">

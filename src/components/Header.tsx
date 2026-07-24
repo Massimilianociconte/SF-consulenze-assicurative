@@ -100,8 +100,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
       }`}>
         <div className="container mx-auto px-4 flex items-center justify-between gap-3">
           
-          {/* Brand Identity (Logo + Full Title - NEVER Truncated) */}
-          <a href="#home" className="flex items-center gap-2.5 group focus:outline-none shrink min-w-0">
+          {/* Brand Identity: Logo + Full Title (Always perfectly visible) */}
+          <a href="#home" className="flex items-center gap-2.5 group focus:outline-none min-w-0 flex-1">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
               <img 
                 src={logoImg} 
@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               />
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-white tracking-tight text-sm sm:text-base lg:text-lg leading-tight group-hover:text-[#c5a059] transition-colors">
+              <span className="font-extrabold text-white tracking-tight text-sm sm:text-base lg:text-lg leading-tight truncate group-hover:text-[#c5a059] transition-colors">
                 S.F. Consulenze Assicurative
               </span>
               <span className="text-[10px] sm:text-[11px] text-[#c5a059] font-semibold tracking-wide truncate">
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             </div>
           </a>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links (hidden on mobile/tablet) */}
           <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
             {navLinks.map((link) => {
               const isActive = activeSection === link.href.substring(1);
@@ -139,20 +139,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             })}
           </div>
 
-          {/* Action CTAs & Mobile Navigation Controls */}
+          {/* Desktop CTA & Mobile Toggle */}
           <div className="flex items-center gap-2 shrink-0">
-            
-            {/* Mobile / Tablet Compact Booking Icon Button (Saves navbar space for title) */}
-            <button
-              onClick={() => onOpenBooking()}
-              className="lg:hidden w-10 h-10 rounded-xl bg-gradient-to-br from-[#c5a059] to-[#b38e46] text-[#07111e] flex items-center justify-center shadow-md font-bold focus:outline-none hover:scale-105 transition-transform"
-              title="Prenota una consulenza"
-              aria-label="Prenota una consulenza"
-            >
-              <Calendar size={18} />
-            </button>
-
-            {/* Desktop Full Text Button */}
+            {/* Desktop CTA Button */}
             <button
               onClick={() => onOpenBooking()}
               className="hidden lg:inline-flex btn btn-primary text-xs xl:text-sm py-2.5 px-4 shadow-lg font-bold"
@@ -161,21 +150,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               <span>Prenota consulenza</span>
             </button>
 
-            {/* Mobile Hamburger Menu Toggle */}
+            {/* Mobile / Tablet Menu Button (Clean 100% spacious navbar row) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden text-white p-2.5 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-colors focus:outline-none"
               aria-label={mobileMenuOpen ? "Chiudi menu" : "Apri menu"}
             >
-              {mobileMenuOpen ? <X size={20} className="text-[#c5a059]" /> : <Menu size={20} />}
+              {mobileMenuOpen ? <X size={22} className="text-[#c5a059]" /> : <Menu size={22} />}
             </button>
-
           </div>
 
         </div>
       </nav>
 
-      {/* 3. Mobile Drawer Menu Overlay */}
+      {/* 3. Mobile Native Drawer Overlay */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 top-[88px] z-50 bg-[#07111e]/98 backdrop-blur-2xl flex flex-col justify-between p-5 border-t border-[#c5a059]/20 animate-fade-in overflow-y-auto">
           

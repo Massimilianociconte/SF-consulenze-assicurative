@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, MessageCircle, ShieldCheck, Scale, Users, CheckCircle2, ArrowRight } from 'lucide-react';
 import { AGENCY_INFO } from '../data/content';
+import logoImg from '../assets/logo.png';
 
 interface HeroProps {
   onOpenBooking: () => void;
@@ -43,7 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenCheckup }) => {
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
               <button
                 onClick={onOpenBooking}
-                className="btn btn-primary btn-lg w-full sm:w-auto shadow-lg text-xs sm:text-base py-3 px-6"
+                className="btn btn-primary btn-lg w-full sm:w-auto shadow-lg text-xs sm:text-base py-3 px-6 font-bold"
               >
                 <Calendar size={18} />
                 <span>Prenota una consulenza</span>
@@ -53,7 +54,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenCheckup }) => {
                 href={`https://wa.me/${AGENCY_INFO.whatsappRaw}?text=Buongiorno%20Simone,%20desidero%20informazioni%20per%20una%20consulenza%20assicurativa`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-whatsapp btn-lg w-full sm:w-auto text-xs sm:text-base py-3 px-6"
+                className="btn btn-whatsapp btn-lg w-full sm:w-auto text-xs sm:text-base py-3 px-6 font-bold"
               >
                 <MessageCircle size={18} />
                 <span>Scrivici su WhatsApp</span>
@@ -97,7 +98,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenCheckup }) => {
               <div className="flex items-center justify-between border-b border-[#1e293b] pb-4 mb-5">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] p-0.5 shadow-md shrink-0">
-                    <img src="/logo.png" alt="SF Logo" className="w-full h-full object-contain rounded-full" />
+                    <img src={logoImg} alt="SF Logo" className="w-full h-full object-contain rounded-full" />
                   </div>
                   <div>
                     <h3 className="text-white font-bold text-base sm:text-lg leading-tight">S.F. Consulenze Assicurative</h3>

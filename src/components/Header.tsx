@@ -95,18 +95,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
       {/* 2. Main Glass Navbar */}
       <nav className={`transition-all duration-300 ${
         isScrolled 
-          ? 'bg-[#0a192f]/95 backdrop-blur-md py-2.5 shadow-xl border-b border-[#c5a059]/25' 
+          ? 'bg-[#0a192f]/95 backdrop-blur-md py-2 shadow-xl border-b border-[#c5a059]/25' 
           : 'bg-[#0a192f] py-3 border-b border-white/10'
       }`}>
-        <div className="container mx-auto px-4 flex items-center justify-between gap-3">
+        <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 xl:gap-4 max-w-full">
           
           {/* Brand Identity:
-              - Mobile (< lg): Logo ONLY (No text) for maximum clean space
-              - Desktop (lg+): Logo + Business Title
+              - Mobile (< lg): Logo ONLY
+              - Desktop (lg+): Logo + Compact Business Title
           */}
-          <a href="#home" className="flex items-center gap-3 group focus:outline-none shrink-0">
+          <a href="#home" className="flex items-center gap-2 xl:gap-2.5 group focus:outline-none shrink-0">
             {/* Circular Logo Frame */}
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
               <img 
                 src={logoImg} 
                 alt="S.F. Consulenze Assicurative" 
@@ -114,26 +114,26 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               />
             </div>
             
-            {/* Title & Subtitle: Shown on Desktop (lg:flex) */}
-            <div className="hidden lg:flex flex-col min-w-0">
-              <span className="font-extrabold text-white tracking-tight text-base lg:text-lg leading-tight truncate group-hover:text-[#c5a059] transition-colors">
+            {/* Desktop Brand Title */}
+            <div className="hidden lg:flex flex-col shrink">
+              <span className="font-extrabold text-white tracking-tight text-xs xl:text-base leading-tight group-hover:text-[#c5a059] transition-colors whitespace-nowrap">
                 S.F. Consulenze Assicurative
               </span>
-              <span className="text-[11px] text-[#c5a059] font-semibold tracking-wide truncate">
+              <span className="text-[10px] xl:text-[11px] text-[#c5a059] font-semibold tracking-wide whitespace-nowrap hidden xl:block">
                 Simone Facchi • Rho (MI)
               </span>
             </div>
           </a>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
+          <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 shrink">
             {navLinks.map((link) => {
               const isActive = activeSection === link.href.substring(1);
               return (
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 rounded-lg text-xs xl:text-sm font-semibold transition-all ${
+                  className={`px-2 py-1.5 xl:px-3 xl:py-2 rounded-lg text-xs xl:text-sm font-semibold transition-all whitespace-nowrap ${
                     isActive
                       ? 'bg-[#112240] text-[#c5a059] border border-[#c5a059]/30 shadow-sm'
                       : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -145,24 +145,21 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
             })}
           </div>
 
-          {/* Right Action Controls:
-              - Mobile (< lg): "Prenota consulenza" Button + Menu Toggle
-              - Desktop (lg+): "Prenota consulenza" Button
-          */}
+          {/* Action CTAs */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Prenota Consulenza Button (Visible on both Mobile and Desktop as requested) */}
+            {/* Prenota Consulenza Button */}
             <button
               onClick={() => onOpenBooking()}
-              className="btn btn-primary text-xs sm:text-sm py-2 px-3 sm:py-2.5 sm:px-4 shadow-lg font-bold"
+              className="btn btn-primary text-xs xl:text-sm py-2 px-3 xl:py-2.5 xl:px-4 shadow-lg font-bold whitespace-nowrap shrink-0"
             >
-              <Calendar size={15} />
+              <Calendar size={14} className="shrink-0" />
               <span>Prenota consulenza</span>
             </button>
 
             {/* Mobile / Tablet Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-white p-2 sm:p-2.5 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-colors focus:outline-none"
+              className="lg:hidden text-white p-2 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-colors focus:outline-none shrink-0"
               aria-label={mobileMenuOpen ? "Chiudi menu" : "Apri menu"}
             >
               {mobileMenuOpen ? <X size={20} className="text-[#c5a059]" /> : <Menu size={20} />}

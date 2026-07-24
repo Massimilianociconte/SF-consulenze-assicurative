@@ -1,6 +1,5 @@
-import React from 'react';
-import { X, ShieldCheck, FileText, Lock, AlertCircle, ExternalLink } from 'lucide-react';
-import { AGENCY_INFO } from '../data/content';
+import React, { useEffect } from 'react';
+import { X, ShieldCheck, ExternalLink, AlertCircle } from 'lucide-react';
 
 interface LegalNoticeModalProps {
   isOpen: boolean;
@@ -9,6 +8,28 @@ interface LegalNoticeModalProps {
 }
 
 export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onClose, modalType }) => {
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const titles = {
@@ -20,51 +41,54 @@ export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onCl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-fade-in overflow-hidden"
+      onClick={onClose}
+    >
       <div 
-        className="bg-white text-slate-800 w-full max-w-3xl rounded-2xl border border-slate-200 shadow-2xl overflow-hidden my-8 relative"
+        className="bg-white text-slate-800 w-full max-w-3xl rounded-2xl sm:rounded-3xl border border-slate-200 shadow-2xl overflow-hidden my-auto relative flex flex-col max-h-[90vh] sm:max-h-[85vh]"
         onClick={(e) => e.stopPropagation()}
       >
         
         {/* Header */}
-        <div className="bg-[#0a192f] text-white p-6 border-b border-[#1e293b] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <ShieldCheck size={24} className="text-[#c5a059]" />
-            <div>
-              <h3 className="text-xl font-bold text-white leading-tight">
+        <div className="bg-[#0a192f] text-white p-4 sm:p-5 border-b border-[#1e293b] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <ShieldCheck size={22} className="text-[#c5a059] shrink-0" />
+            <div className="min-w-0">
+              <h3 className="text-base sm:text-lg font-bold text-white leading-tight truncate">
                 {titles[modalType]}
               </h3>
-              <p className="text-xs text-[#c5a059]">S.F. Consulenze Assicurative di Simone Facchi • Rho (MI)</p>
+              <p className="text-[11px] sm:text-xs text-[#c5a059] truncate">S.F. Consulenze Assicurative • Simone Facchi (Rho)</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-[#1e293b] transition-colors"
-            aria-label="Chiudi"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors shrink-0 cursor-pointer focus:outline-none"
+            aria-label="Chiudi finestra"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 sm:p-8 max-h-[70vh] overflow-y-auto space-y-5 text-sm text-slate-700 leading-relaxed">
+        {/* Scrollable Body */}
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed flex-1">
           
           {modalType === 'rui' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-3">
-                <AlertCircle size={18} className="shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+                <AlertCircle size={16} className="shrink-0 mt-0.5" />
                 <div>
                   <strong>Trasparenza RUI & Registro IVASS:</strong> I dati identificativi ufficiali (Numero di iscrizione RUI, data e sezione di appartenenza) sono consultabili presso i locali dell'ufficio a Rho e resi noti nella documentazione precontrattuale consegnata ad ogni potenziale contraente prima dell'emissione della polizza.
                 </div>
               </div>
 
-              <h4 className="font-bold text-[#0a192f] text-base">Identificativo Intermediario</h4>
+              <h4 className="font-bold text-[#0a192f] text-sm sm:text-base">Identificativo Intermediario</h4>
               <p>• <strong>Denominazione:</strong> S.F. Consulenze Assicurative di Simone Facchi</p>
               <p>• <strong>Sede Operativa:</strong> Galleria M.K. Gandhi 32/14, 20017 Rho (MI)</p>
               <p>• <strong>Contatti:</strong> Tel 02 9899 6931 | Cell 334 904 7946 | Email sfconsulenze@outlook.com</p>
               
-              <h4 className="font-bold text-[#0a192f] text-base pt-2">Verifica Pubblica</h4>
+              <h4 className="font-bold text-[#0a192f] text-sm sm:text-base pt-2">Verifica Pubblica</h4>
               <p>
                 Gli estremi di iscrizione al RUI (Registro Unico degli Intermediari assicurativi e riassicurativi) sono pubblicamente verificabili sul sito ufficiale dell'IVASS (Istituto per la Vigilanza sulle Assicurazioni):
               </p>
@@ -82,7 +106,7 @@ export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onCl
 
           {modalType === 'ivass' && (
             <div className="space-y-4">
-              <h4 className="font-bold text-[#0a192f] text-base">Informativa Precontrattuale e Regolamento IVASS n. 40/2018</h4>
+              <h4 className="font-bold text-[#0a192f] text-sm sm:text-base">Informativa Precontrattuale e Regolamento IVASS n. 40/2018</h4>
               <p>
                 Prima della sottoscrizione di ciascuna proposta o contratto di assicurazione, S.F. Consulenze Assicurative mette a disposizione del cliente i documenti informativi stabiliti dalla normativa vigente:
               </p>
@@ -100,7 +124,7 @@ export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onCl
 
           {modalType === 'reclami' && (
             <div className="space-y-4">
-              <h4 className="font-bold text-[#0a192f] text-base">Procedura di Presentazione Reclami</h4>
+              <h4 className="font-bold text-[#0a192f] text-sm sm:text-base">Procedura di Presentazione Reclami</h4>
               <p>
                 Eventuali reclami relativi al rapporto contrattuale o al comportamento dell'intermediario o dei suoi collaboratori possono essere inoltrati a S.F. Consulenze Assicurative tramite raccomandata A/R indirizzata a:
               </p>
@@ -117,7 +141,7 @@ export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onCl
 
           {modalType === 'privacy' && (
             <div className="space-y-4">
-              <h4 className="font-bold text-[#0a192f] text-base">Informativa sul Trattamento dei Dati Personali (GDPR)</h4>
+              <h4 className="font-bold text-[#0a192f] text-sm sm:text-base">Informativa sul Trattamento dei Dati Personali (GDPR)</h4>
               <p>
                 Ai sensi dell'art. 13 del Regolamento UE 2016/679 (GDPR), informiamo che i dati personali forniti spontaneamente dagli utenti tramite i form del sito (richiesta consulenza, check-up, notifica sinistri, richiamata) vengono trattati da S.F. Consulenze Assicurative in qualità di Titolare del Trattamento.
               </p>
@@ -128,7 +152,7 @@ export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onCl
 
           {modalType === 'cookie' && (
             <div className="space-y-4">
-              <h4 className="font-bold text-[#0a192f] text-base">Politica sui Cookie e Strumenti di Tracciamento</h4>
+              <h4 className="font-bold text-[#0a192f] text-sm sm:text-base">Politica sui Cookie e Strumenti di Tracciamento</h4>
               <p>
                 Questo sito web utilizza esclusivamente cookie tecnici essenziali al corretto funzionamento della navigazione (es. gestione delle sessioni dei form) e cookie analitici anonimizzati basati sul consenso dell'utente per misurare il traffico aggregato.
               </p>
@@ -141,8 +165,8 @@ export const LegalNoticeModal: React.FC<LegalNoticeModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-100 p-4 border-t border-slate-200 flex justify-end">
-          <button onClick={onClose} className="btn btn-[#0a192f] btn-primary text-xs">
+        <div className="bg-slate-100 p-3.5 border-t border-slate-200 flex justify-end shrink-0">
+          <button onClick={onClose} className="btn btn-primary text-xs py-2 px-4">
             Ho compreso e chiudo
           </button>
         </div>

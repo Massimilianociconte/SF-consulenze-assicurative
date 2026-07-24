@@ -101,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
         <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 xl:gap-4 max-w-full">
           
           {/* Brand Identity:
-              - Mobile (< lg): Logo ONLY
+              - Mobile (< lg): Circular Logo ONLY (Zero title truncation, max clean space)
               - Desktop (lg+): Logo + Compact Business Title
           */}
           <a href="#home" className="flex items-center gap-2 xl:gap-2.5 group focus:outline-none shrink-0">
@@ -156,55 +156,72 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               <span>Prenota consulenza</span>
             </button>
 
-            {/* Mobile / Tablet Menu Toggle */}
+            {/* Mobile / Tablet Innovative Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-white p-2 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-colors focus:outline-none shrink-0"
+              className="lg:hidden text-white p-2 sm:p-2.5 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-all focus:outline-none shrink-0 hover:scale-105 active:scale-95"
               aria-label={mobileMenuOpen ? "Chiudi menu" : "Apri menu"}
             >
-              {mobileMenuOpen ? <X size={20} className="text-[#c5a059]" /> : <Menu size={20} />}
+              {mobileMenuOpen ? (
+                <X size={20} className="text-[#c5a059] rotate-90 transition-transform duration-300" />
+              ) : (
+                <Menu size={20} className="transition-transform duration-300" />
+              )}
             </button>
           </div>
 
         </div>
       </nav>
 
-      {/* 3. Mobile Native Drawer Overlay */}
+      {/* 3. Innovative Mobile Native Drawer Overlay */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-[88px] z-50 bg-[#07111e]/98 backdrop-blur-2xl flex flex-col justify-between p-5 border-t border-[#c5a059]/20 animate-fade-in overflow-y-auto">
+        <div className="lg:hidden fixed inset-0 top-[88px] z-50 bg-[#050c17]/96 backdrop-blur-2xl flex flex-col justify-between p-5 border-t border-[#c5a059]/25 animate-drawer-open overflow-y-auto">
           
           <div className="space-y-1.5 pt-2">
-            <span className="text-[11px] font-bold text-[#c5a059] uppercase tracking-wider block px-3 mb-2">
-              Navigazione Principale
-            </span>
-            {navLinks.map((link) => {
+            <div className="flex items-center justify-between px-3 mb-3">
+              <span className="text-[11px] font-bold text-[#c5a059] uppercase tracking-wider">
+                Navigazione Principale
+              </span>
+              <span className="text-[10px] text-[#c5a059] font-semibold px-2.5 py-0.5 rounded-full bg-[#112240] border border-[#c5a059]/30">
+                S.F. Consulenze Rho
+              </span>
+            </div>
+
+            {navLinks.map((link, idx) => {
               const isActive = activeSection === link.href.substring(1);
               return (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all ${
+                  style={{ animationDelay: `${(idx + 1) * 40}ms` }}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all animate-stagger-item ${
                     isActive
-                      ? 'bg-[#112240] text-[#c5a059] border border-[#c5a059]/30 shadow-md'
-                      : 'text-slate-200 hover:bg-white/5 hover:text-white'
+                      ? 'bg-gradient-to-r from-[#112240] to-[#1e293b] text-[#c5a059] border border-[#c5a059]/40 shadow-lg scale-[1.01]'
+                      : 'bg-[#0a192f]/70 border border-white/5 text-slate-200 hover:bg-white/10 hover:text-white'
                   }`}
                 >
-                  <span>{link.label}</span>
-                  <ChevronRight size={18} className={isActive ? 'text-[#c5a059]' : 'text-slate-500'} />
+                  <span className="flex items-center gap-2.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-[#c5a059]' : 'bg-slate-600'}`} />
+                    {link.label}
+                  </span>
+                  <ChevronRight size={18} className={isActive ? 'text-[#c5a059] translate-x-0.5' : 'text-slate-500'} />
                 </a>
               );
             })}
           </div>
 
           {/* Bottom Actions in Mobile Drawer */}
-          <div className="pt-6 pb-4 border-t border-slate-800/80 space-y-3">
+          <div 
+            className="pt-5 pb-3 border-t border-slate-800/80 space-y-3 animate-stagger-item" 
+            style={{ animationDelay: '360ms' }}
+          >
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenBooking();
               }}
-              className="btn btn-primary w-full justify-center text-sm py-3.5 shadow-xl font-bold"
+              className="btn btn-primary w-full justify-center text-sm py-3.5 shadow-xl font-bold rounded-2xl"
             >
               <Calendar size={18} />
               <span>Prenota una consulenza gratuita</span>
@@ -214,13 +231,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               href={`https://wa.me/${AGENCY_INFO.whatsappRaw}?text=Buongiorno%20Simone,%20vorrei%20informazioni`}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-whatsapp w-full justify-center text-sm py-3.5 font-bold"
+              className="btn btn-whatsapp w-full justify-center text-sm py-3.5 font-bold rounded-2xl"
             >
               <MessageCircle size={18} />
               <span>Scrivici su WhatsApp</span>
             </a>
 
-            <div className="text-center pt-2 text-xs text-slate-400">
+            <div className="text-center pt-1 text-xs text-slate-400">
               <span className="block font-semibold text-slate-300">Studio Simone Facchi</span>
               <span>{AGENCY_INFO.address}, Rho (MI) • Tel: {AGENCY_INFO.phone}</span>
             </div>

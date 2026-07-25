@@ -125,67 +125,78 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
       >
         <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 xl:gap-3 max-w-7xl">
           
-          {/* Brand Identity:
-              - Mobile (< lg): Logo ONLY
-              - Desktop (lg+): Logo + Compact Title
-          */}
-          <a href="#home" className="flex items-center gap-2 xl:gap-2.5 group focus:outline-none shrink-0">
-            {/* Circular Logo Frame */}
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
-              <img 
-                src={logoImg} 
-                alt="S.F. Consulenze Assicurative" 
-                className="w-full h-full object-contain rounded-full"
-              />
-            </div>
-            
-            {/* Desktop Brand Title */}
-            <div className="hidden lg:flex flex-col shrink-0">
-              <span className="font-extrabold text-white tracking-tight text-xs xl:text-sm 2xl:text-base leading-tight group-hover:text-[#c5a059] transition-colors whitespace-nowrap">
-                S.F. Consulenze Assicurative
-              </span>
-              <span className="text-[10px] xl:text-[11px] text-[#c5a059] font-semibold tracking-wide whitespace-nowrap hidden 2xl:block">
-                Simone Facchi • Rho (MI)
-              </span>
-            </div>
-          </a>
-
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 shrink">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.href.substring(1);
-              return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={`px-2 py-1.5 xl:px-2.5 xl:py-2 rounded-lg text-xs xl:text-xs 2xl:text-sm font-semibold transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'bg-[#112240] text-[#c5a059] border border-[#c5a059]/30 shadow-sm'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span className="xl:hidden">{link.shortLabel}</span>
-                  <span className="hidden xl:inline">{link.label}</span>
-                </a>
-              );
-            })}
+          {/* Left: Brand Identity (Logo on mobile w-10, Logo + Title on desktop) */}
+          <div className="flex items-center justify-start w-10 lg:w-auto shrink-0">
+            <a href="#home" className="flex items-center gap-2 xl:gap-2.5 group focus:outline-none shrink-0">
+              {/* Circular Logo Frame */}
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-[#c5a059] shadow-md flex items-center justify-center p-[2px] shrink-0 group-hover:scale-105 transition-transform">
+                <img 
+                  src={logoImg} 
+                  alt="S.F. Consulenze Assicurative" 
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </div>
+              
+              {/* Desktop Brand Title */}
+              <div className="hidden lg:flex flex-col shrink-0">
+                <span className="font-extrabold text-white tracking-tight text-xs xl:text-sm 2xl:text-base leading-tight group-hover:text-[#c5a059] transition-colors whitespace-nowrap">
+                  S.F. Consulenze Assicurative
+                </span>
+                <span className="text-[10px] xl:text-[11px] text-[#c5a059] font-semibold tracking-wide whitespace-nowrap hidden 2xl:block">
+                  Simone Facchi • Rho (MI)
+                </span>
+              </div>
+            </a>
           </div>
 
-          {/* Right Action Controls: Never Clipped */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Desktop & Mobile CTA Button */}
+          {/* Middle: Mobile Centered CTA Button & Desktop Navigation Links */}
+          <div className="flex-1 flex items-center justify-center lg:justify-start lg:gap-1 xl:gap-1.5 shrink">
+            {/* Mobile CTA Button - Perfectly Centered between Logo (w-10) and Hamburger Toggle (w-10) */}
             <button
               onClick={() => onOpenBooking()}
-              className="btn btn-primary text-xs xl:text-xs 2xl:text-sm py-2 px-3 xl:py-2.5 xl:px-3.5 shadow-lg font-bold whitespace-nowrap shrink-0"
+              className="lg:hidden btn btn-primary text-xs py-2 px-3 shadow-lg font-bold whitespace-nowrap shrink-0 flex items-center gap-1.5"
             >
               <Calendar size={14} className="shrink-0" />
               <span>Prenota consulenza</span>
             </button>
 
-            {/* Mobile / Tablet Menu Toggle */}
+            {/* Desktop Navigation Links */}
+            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 shrink">
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.href.substring(1);
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className={`px-2 py-1.5 xl:px-2.5 xl:py-2 rounded-lg text-xs xl:text-xs 2xl:text-sm font-semibold transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-[#112240] text-[#c5a059] border border-[#c5a059]/30 shadow-sm'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span className="xl:hidden">{link.shortLabel}</span>
+                    <span className="hidden xl:inline">{link.label}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right: Desktop CTA Button & Mobile Menu Toggle */}
+          <div className="flex items-center justify-end w-10 lg:w-auto shrink-0 gap-2">
+            {/* Desktop CTA Button */}
+            <button
+              onClick={() => onOpenBooking()}
+              className="hidden lg:flex btn btn-primary text-xs xl:text-xs 2xl:text-sm py-2 px-3 xl:py-2.5 xl:px-3.5 shadow-lg font-bold whitespace-nowrap shrink-0 items-center gap-1.5"
+            >
+              <Calendar size={14} className="shrink-0" />
+              <span>Prenota consulenza</span>
+            </button>
+
+            {/* Mobile / Tablet Menu Toggle (exact w-10 h-10 matching logo w-10 h-10) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-white p-2 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-all focus:outline-none shrink-0 active:scale-95"
+              className="lg:hidden text-white w-10 h-10 rounded-xl bg-[#112240] hover:bg-[#1e293b] border border-white/10 flex items-center justify-center transition-all focus:outline-none shrink-0 active:scale-95"
               aria-label={mobileMenuOpen ? "Chiudi menu" : "Apri menu"}
             >
               {mobileMenuOpen ? (

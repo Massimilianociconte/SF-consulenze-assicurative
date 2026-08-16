@@ -1,0 +1,23 @@
+# Copiare in `.dev.vars` per lo sviluppo locale (`npm run dev:worker`).
+# In produzione questi valori NON stanno qui: si impostano con
+#   npx wrangler secret put NOME_SEGRETO
+# Il file .dev.vars e' in .gitignore e non va mai committato.
+
+# --- Google OAuth ---
+# Console Google Cloud > API e servizi > Credenziali > ID client OAuth (Applicazione web)
+# Origine JavaScript autorizzata:  http://localhost:8787
+# URI di reindirizzamento:         http://localhost:8787/api/auth/google/callback
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+# --- Cloudflare Turnstile (protezione bot su login/registrazione) ---
+# Se TURNSTILE_SECRET_KEY e' vuoto, la verifica viene saltata (utile in locale).
+TURNSTILE_SITE_KEY=""
+TURNSTILE_SECRET_KEY=""
+
+# --- URL applicazione in locale (deve combaciare con il redirect OAuth) ---
+APP_URL="http://localhost:8787"
+
+# --- Firma dei link temporanei di download dei documenti ---
+# In produzione: npx wrangler secret put DOWNLOAD_SIGNING_KEY (stringa casuale lunga)
+DOWNLOAD_SIGNING_KEY=""

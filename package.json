@@ -5,16 +5,37 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "tsc",
-    "preview": "vite preview"
+    "dev:worker": "wrangler dev",
+    "dev:worker:log": "mkdir -p .wrangler && wrangler dev --port 8787 2>&1 | tee .wrangler/dev.log",
+    "test:e2e": "node scripts/smoke-test.mjs --log=${WRANGLER_LOG:-.wrangler/dev.log}",
+    "build": "npm run lint && node scripts/fetch-ocr-assets.mjs && node scripts/build-belfiore.mjs && vite build && node scripts/build-headers.mjs",
+    "lint": "tsc -p tsconfig.json && tsc -p worker/tsconfig.json",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:staging": "npm run build && wrangler deploy --env staging",
+    "db:migrate:local": "wrangler d1 migrations apply sf-portal --local",
+    "db:migrate": "wrangler d1 migrations apply sf-portal --remote",
+    "db:migrate:staging": "wrangler d1 migrations apply sf-portal-staging --remote --env staging",
+    "cf-typegen": "wrangler types",
+    "ocr:assets": "node scripts/fetch-ocr-assets.mjs",
+    "test:codes": "node scripts/test-codes.mjs",
+    "test": "npm run test:codes && npm run test:e2e",
+    "belfiore": "node scripts/build-belfiore.mjs",
+    "anncsu:build": "node scripts/build-anncsu-reference.mjs",
+    "anncsu:import:local": "wrangler d1 execute sf-portal --local --file=.data/anncsu-H264.sql"
   },
   "dependencies": {
+    "hono": "^4.12.32",
     "lucide-react": "^0.460.0",
+    "pdfjs-dist": "^6.2.108",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.2",
+    "tesseract.js": "^7.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260730.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^18.3.12",
@@ -24,6 +45,7 @@
     "postcss": "^8.5.22",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.6.3",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "wrangler": "^4.116.0"
   }
 }

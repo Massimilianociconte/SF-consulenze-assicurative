@@ -13,6 +13,13 @@ dist
 dist-ssr
 *.local
 
+# Cloudflare Workers
+.wrangler
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+worker-configuration.d.ts
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -23,3 +30,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Motore OCR generato da scripts/fetch-ocr-assets.mjs (non versionato)
+public/ocr/
+public/dati/
+
+# Import SQL generati da dati ufficiali (salvo la migrazione iniziale revisionata)
+.data/

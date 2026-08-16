@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Phone, MessageCircle, MapPin, Menu, X, Calendar, Shield, ChevronRight, Sparkles, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Phone, MessageCircle, MapPin, Menu, X, Calendar, Shield, ChevronRight, Sparkles, Award, Lock } from 'lucide-react';
 import { AGENCY_INFO } from '../data/content';
+import { useAuth } from '../lib/auth';
 import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
@@ -13,6 +15,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navBottomOffset, setNavBottomOffset] = useState<number>(80);
+  const { user } = useAuth();
+
+  // Utente autenticato: il link porta direttamente all'area riservata.
+  const reservedAreaHref = user ? '/area-riservata' : '/accedi';
+  const reservedAreaLabel = user ? 'Area riservata' : 'Accedi';
   
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -100,15 +107,27 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
 
             <span className="text-slate-700">|</span>
 
-            <a 
+            <a
               href={`https://wa.me/${AGENCY_INFO.whatsappRaw}?text=Buongiorno%20Simone,%20desidero%20informazioni`}
-              target="_blank" 
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-[#25D366] hover:brightness-110 font-bold transition-all"
             >
               <MessageCircle size={12} />
               <span>WhatsApp</span>
             </a>
+
+            {/* Accesso area riservata: solo da tablet in su, per non affollare
+                la barra su mobile (in mobile e' nel menu a scomparsa). */}
+            <span className="hidden sm:inline text-slate-700">|</span>
+
+            <Link
+              to={reservedAreaHref}
+              className="hidden sm:inline-flex items-center gap-1 text-[#c5a059] hover:text-white font-bold transition-colors"
+            >
+              <Lock size={12} />
+              <span>{reservedAreaLabel}</span>
+            </Link>
           </div>
 
         </div>
@@ -274,6 +293,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenLegal, acti
               <MessageCircle size={18} />
               <span>Scrivici su WhatsApp</span>
             </a>
+
+            <Link
+              to={reservedAreaHref}
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl border border-[#c5a059]/50 bg-[#0a192f]/80 py-3.5 text-sm font-bold text-[#c5a059] hover:bg-[#112240] transition-colors"
+            >
+              <Lock size={17} />
+              <span>{user ? 'Vai all’area riservata' : 'Accedi all’area riservata'}</span>
+            </Link>
 
             <div className="text-center pt-1 text-[11px] text-slate-400">
               <span className="block font-semibold text-slate-200">S.F. Consulenze Assicurative di Simone Facchi</span>

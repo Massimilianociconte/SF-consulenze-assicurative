@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { PillarsSection } from './components/PillarsSection';
@@ -21,6 +22,18 @@ export const App: React.FC = () => {
   const [bookingSubject, setBookingSubject] = useState<string | undefined>(undefined);
   const [legalModalOpen, setLegalModalOpen] = useState<boolean>(false);
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'cookie' | 'ivass' | 'reclami' | 'rui'>('ivass');
+  const [searchParams] = useSearchParams();
+
+  // Permette di aprire un'informativa da un link esterno alla home
+  // (es. il consenso privacy nella pagina di registrazione: /?legale=privacy).
+  useEffect(() => {
+    const requested = searchParams.get('legale');
+    const allowed = ['privacy', 'cookie', 'ivass', 'reclami', 'rui'] as const;
+    if (requested && (allowed as readonly string[]).includes(requested)) {
+      setLegalModalType(requested as typeof allowed[number]);
+      setLegalModalOpen(true);
+    }
+  }, [searchParams]);
 
   // Track active section on scroll
   useEffect(() => {

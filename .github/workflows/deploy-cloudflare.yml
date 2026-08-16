@@ -1,0 +1,60 @@
+name: Deploy su Cloudflare Workers
+
+# Attivazione manuale finche' non e' completato il cutover DNS da GitHub Pages.
+# Dopo il cutover si puo' abilitare il trigger su push (vedi DEPLOY.md).
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Ambiente di destinazione"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+concurrency:
+  group: "cloudflare-${{ inputs.environment }}"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Apply D1 migrations
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            npx wrangler d1 migrations apply sf-portal --remote
+          else
+            npx wrangler d1 migrations apply sf-portal-staging --remote --env staging
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy Worker
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            npx wrangler deploy
+          else
+            npx wrangler deploy --env staging
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

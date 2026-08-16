@@ -1,0 +1,115 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "sf-consulenze-assicurative",
+  "main": "worker/src/index.ts",
+  "compatibility_date": "2026-07-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+
+  // Il Worker serve sia il sito statico (dist/) sia le API su /api/*.
+  // "run_worker_first" e' indispensabile: senza, le richieste /api/* verrebbero
+  // intercettate dal fallback SPA e restituirebbero index.html.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Pulizia notturna di sessioni scadute, token consumati e contatori di rate
+  // limit. I Cron Trigger sono disponibili anche sul piano gratuito (max 5).
+  "triggers": {
+    "crons": ["30 3 * * *"]
+  },
+
+  "vars": {
+    "ENVIRONMENT": "production",
+    "APP_URL": "https://www.sfconsulenzeassicurative.it",
+
+    // Trasporto email: "auto" usa il binding EMAIL se presente (piano Paid),
+    // altrimenti l'API HTTP del fornitore configurato in MAIL_API_KEY.
+    // Sul piano gratuito impostare "brevo" (300 email/giorno, dati in UE)
+    // oppure "resend" (3.000 email/mese).
+    "MAIL_PROVIDER": "brevo",
+    "MAIL_FROM": "noreply@sfconsulenzeassicurative.it",
+    "MAIL_FROM_NAME": "S.F. Consulenze Assicurative",
+    "MAIL_REPLY_TO": "sfconsulenze@outlook.com",
+    "ADVISOR_EMAIL": "sfconsulenze@outlook.com",
+
+    // ID pubblico OAuth Google (non e' un segreto). Il client secret va in
+    // `wrangler secret put GOOGLE_CLIENT_SECRET`.
+    "GOOGLE_CLIENT_ID": "",
+    // Site key pubblica Turnstile. Se vuota, la verifica bot resta disattivata.
+    "TURNSTILE_SITE_KEY": ""
+  },
+
+  // Creare con: npx wrangler d1 create sf-portal
+  // Unico archivio dati strutturati: anagrafiche, polizze, sinistri, sessioni,
+  // rate limit, registro operazioni. Nessun binding KV: sul piano gratuito
+  // consentirebbe solo 1.000 scritture al giorno.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sf-portal",
+      "database_id": "SOSTITUIRE_CON_ID_D1",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Creare con: npx wrangler r2 bucket create sf-documenti
+  // Usato dalla fase 2 (documenti). Free tier: 10 GB, egress gratuito.
+  "r2_buckets": [
+    {
+      "binding": "DOCS",
+      "bucket_name": "sf-documenti"
+    }
+  ],
+
+  // Email Sending di Cloudflare richiede il piano Workers Paid: sul piano
+  // gratuito questo binding farebbe fallire il deploy, quindi resta commentato.
+  // Passando a Paid: decommentare, eseguire
+  //   npx wrangler email sending enable sfconsulenzeassicurative.it
+  // e impostare MAIL_PROVIDER = "cloudflare".
+  // "send_email": [{ "name": "EMAIL" }],
+
+  "env": {
+    "staging": {
+      "name": "sf-consulenze-assicurative-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "APP_URL": "https://sf-consulenze-assicurative-staging.workers.dev",
+        "MAIL_PROVIDER": "log",
+        "MAIL_FROM": "noreply@sfconsulenzeassicurative.it",
+        "MAIL_FROM_NAME": "S.F. Consulenze Assicurative (staging)",
+        "MAIL_REPLY_TO": "sfconsulenze@outlook.com",
+        "ADVISOR_EMAIL": "sfconsulenze@outlook.com",
+        "GOOGLE_CLIENT_ID": "",
+        "TURNSTILE_SITE_KEY": ""
+      },
+      "assets": {
+        "directory": "./dist",
+        "binding": "ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": ["/api/*"]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "sf-portal-staging",
+          "database_id": "SOSTITUIRE_CON_ID_D1_STAGING",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "DOCS",
+          "bucket_name": "sf-documenti-staging"
+        }
+      ]
+    }
+  }
+}

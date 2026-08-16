@@ -35,6 +35,9 @@ jobs:
 
       - name: Build site
         run: npm run build
+        env:
+          # Mantiene il base path relativo usato finora da GitHub Pages.
+          DEPLOY_TARGET: pages
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

@@ -171,6 +171,15 @@ export const RegulatoryFooter: React.FC<RegulatoryFooterProps> = ({ onOpenLegalM
             <button onClick={() => onOpenLegalModal('cookie')} className="hover:underline">Cookie</button>
             <span>•</span>
             <button onClick={() => onOpenLegalModal('ivass')} className="hover:underline">Note Legali</button>
+            <span>•</span>
+            <a
+              href="https://webnovis.it/"
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="hover:underline"
+            >
+              WebNovis
+            </a>
           </div>
         </div>
 
